@@ -82,6 +82,22 @@ class GraphAPI(object):
     """
     def __init__(self, access_token=None):
         self.access_token = access_token
+        
+    # SS - Added fql method
+    # @link http://bit.ly/pQdHSH
+    def fql(self, fql, args=None):
+        if not args: args = {}
+        args["query"], args["format"] = fql, "json"
+        if self.access_token:
+            args["access_token"] = self.access_token
+        file = urllib2.urlopen("https://api.facebook.com/method/fql.query?" + urllib.urlencode(args))
+        try: 
+            response = _parse_json(file.read())
+        finally: 
+            file.close()
+        if type(response) == dict and response.get("error_code"):
+            raise GraphAPIError(str(response["error_code"]), response["error_msg"])
+        return response
 
     def get_object(self, id, **args):
         """Fetchs the given object from the graph."""
