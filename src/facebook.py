@@ -37,6 +37,7 @@ import cgi
 import hashlib
 import time
 import urllib
+import urllib2
 
 # Find a JSON parser
 try:
